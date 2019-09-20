@@ -5,6 +5,7 @@ namespace Eusebiu\LaravelSparkGoogle2FA;
 use Laravel\Spark\Spark;
 use Illuminate\Http\Request;
 use PragmaRX\Google2FA\Google2FA;
+use PragmaRX\Google2FAQRCode\Google2FA as Google2FAQRCode;
 use Illuminate\Validation\ValidationException;
 use Laravel\Spark\Contracts\Interactions\Settings\Security\EnableTwoFactorAuth;
 use Laravel\Spark\Http\Controllers\Settings\Security\TwoFactorAuthController as Controller;
@@ -34,8 +35,6 @@ class TwoFactorAuthController extends Controller
      */
     public function generate(Request $request)
     {
-        $this->g2fa->setAllowInsecureCallToGoogleApis(true);
-
         $secret = $this->g2fa->generateSecretKey();
 
         $request->session()->put('spark:twofactor:secret', $secret);
@@ -82,10 +81,12 @@ class TwoFactorAuthController extends Controller
                     Spark::$details['vendor'] ??
                     url()->to('/');
 
-        return str_replace(
-            '200x200',
-            '260x260',
-            $this->g2fa->getQRCodeGoogleUrl(urlencode($company), $email, $secret)
+        $google2fa = new Google2FAQRCode();
+
+        return $google2fa->getQRCodeInline(
+            urlencode($company),
+            $email,
+            $secret
         );
     }
 }

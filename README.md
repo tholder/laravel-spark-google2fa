@@ -11,6 +11,11 @@ This package replaces the default two-factor authentication driver with [Google 
 - `php artisan migrate`
 - `npm run dev`
 
+You will need to ensure you have the ImageMagick component installed. If you use homebrew you should be able to:
+
+- `brew install ImageMagick`
+- `pecl install imagick`
+
 ## Customization
 
 To change the display name in the authenticator app, add `2fa_name` in your `SparkServiceProvider` file. By default `vendor` or the app url is used.
